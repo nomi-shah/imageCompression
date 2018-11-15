@@ -93,9 +93,7 @@ app.get('/image/convert', function(req, res) {
 /**
 	crop operations
 	===============
-	options that you can pass while crop image from one to another
-	options : 
-	Options are same as resize and also passed gravity as a options such as [NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast].
+	
 **/
 app.get('/image/crop', function(req, res) {
 	var optionsObj = {
