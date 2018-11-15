@@ -12,9 +12,7 @@ app.get('/', function(req, res) {
 //Get full information about image
 app.get('/getimage/information', function(req, res) {
 	im.identify(srcImage, function(err, features){
-		if (err) {
-			console.log('error is ', err);
-		}
+		if (err) throw err;
 		res.json({"images_data": features});
 	});
 });
@@ -77,8 +75,7 @@ app.get('/image/resize', function(req, res) {
 	convert operations
 	==================
 	options that you can pass while converting image from one to another
-	options : 
-	['source image', '-resize', '25x120', 'destination image']
+	
 **/
 app.get('/image/convert', function(req, res) {
 	var optionsObj = [srcImage, '-resize', '250x250', desPath+'butterfly_small.jpg'];
