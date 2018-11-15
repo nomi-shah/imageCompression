@@ -35,27 +35,7 @@ app.get('/getimage/readmetadata', function(req, res) {
 	});
 });
 
-/**
-	resize operations
-	=================
-	options that you can pass while resize image from one to another
-	options : 
-	{
-		srcPath: undefined,
-		srcData: null,
-		srcFormat: null,
-		dstPath: undefined,
-		quality: 0.8,
-		format: 'jpg',
-		progressive: false,
-		width: 0,
-		height: 0,
-		strip: true,
-		filter: 'Lagrange',
-		sharpening: 0.2,
-		customArgs: []
-	}
-**/
+
 app.get('/image/resize', function(req, res) {
 	var optionsObj = {
 		srcPath: srcImage,
@@ -74,7 +54,6 @@ app.get('/image/resize', function(req, res) {
 /**
 	convert operations
 	==================
-	options that you can pass while converting image from one to another
 	
 **/
 app.get('/image/convert', function(req, res) {
