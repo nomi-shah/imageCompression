@@ -2,8 +2,8 @@ var express = require('express');
 		app = express(),
 		fs = require('fs'),
 		im = require('imagemagick'),
-		srcImage = "./source_images/my-pic.jpg",
-		desPath = "./destination_images/";				
+		srcImage = "./source_images/my_pic.jpg",
+		desPath = "./destination_images/";
 const args = process.argv;
 
 app.get('/health', function(req, res) {
@@ -30,7 +30,7 @@ app.get('/getimage/readmetadata', function(req, res) {
 app.get('/image/resize/:qaulity', function(req, res) {
 	var optionsObj = {
 		srcPath: srcImage,
-		dstPath: desPath+"my-pic.jpg",
+		dstPath: desPath+"my_pic.jpg",
 		quality: req.params.quality,
 		width: ""
 	};
@@ -67,7 +67,7 @@ app.get('/image/crop/:width/:height', function(req, res) {
 function crop_image(req,res){
 	var optionsObj = {
 		srcPath: srcImage,
-		dstPath: desPath+'myimage_cropped.jpg',
+		dstPath: desPath+"myimage_cropped.jpg",
 		width: req.params.width,
 		height: req.params.height,
 		quality: 1,
@@ -87,37 +87,25 @@ function crop_image(req,res){
 
 if (args.indexOf("lamda_event.json") > -1) {
 	console.log("Starting as a lamda function.....");
-
 } else {
     app.listen('3000', function(){
 		console.log("server listening on port 3000....");
 	});	
 }
-module.exports.crop = async (event, context) => {
-
-	var optionsObj = {
-		srcPath: srcImage,
-		dstPath: desPath+'myimage_cropped.jpg',
-		width: event.width,
-		height: event.height,
-		quality: 1,
-		gravity: "North"
-	};
-	im.crop(optionsObj, function(err, stdout){
-		console.log("Starting.........")
-		if (err) throw err;
-		
-		return {
-			statusCode: 200,
-			body: JSON.stringify({
-				
-					message: "cropping done",
-					width:event.width,
-					height:event.height
-				
-			}),
-		  };
-	});
-
+module.exports.crop = (event, context, callback) => {
+		var optionsObj = {
+			srcPath: srcImage,
+			dstPath: desPath+'myimage_cropped.jpg',
+			width: event.width,
+			height: event.height,
+			quality: 1,
+			gravity: "North"
+		};
+		im.crop(optionsObj, function(err, stdout){
+			if (err)
+			return callback(error);
+			else    
+			return callback(null, stdout);
+		});	
   };
   
