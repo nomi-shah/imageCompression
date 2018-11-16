@@ -1,12 +1,23 @@
 # imageCompression
 Start as a server to compress image 
-node app.js
+`node app.js`
 
 # Crop image
 width
 height
 
-```http://localhost:3000/image/crop/400/400```
+```
+http://localhost:3000/image/crop/:width/:height
+http://localhost:3000/image/crop/400/400```
+# Resize
+
+Qaulity 0-1
+
+```
+http://localhost:3000/image/resize/:qaulity
+http://localhost:3000/image/resize/:0.5
+```
+
 
 
 # Run as a Lamda function to crop image
