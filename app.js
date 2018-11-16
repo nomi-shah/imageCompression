@@ -2,11 +2,11 @@ var express = require('express');
 		app = express(),
 		fs = require('fs'),
 		im = require('imagemagick'),
-		srcImage = "./source_images/butterfly.jpg",
+		srcImage = "./source_images/my-pic.jpg",
 		desPath = "./destination_images/";
 
-app.get('/', function(req, res) {
-	res.json({"message":"Connected successfully"});
+app.get('/health', function(req, res) {
+	res.status(200).json({"message":"Server is healthy"});
 });
 
 //Get full information about image
@@ -14,16 +14,6 @@ app.get('/getimage/information', function(req, res) {
 	im.identify(srcImage, function(err, features){
 		if (err) throw err;
 		res.json({"images_data": features});
-	});
-});
-
-//Get specific information about image
-app.get('/getimage/information/:specific', function(req, res) {
-	var selectSpecific = decodeURIComponent(req.params.specific);
-	selectSpecific = JSON.parse(selectSpecific).join("%");
-	im.identify(['-format','%'+selectSpecific, srcImage], function(err, output){
-		if (err) throw err;
-		res.json({"images_data": output});
 	});
 });
 
@@ -35,12 +25,12 @@ app.get('/getimage/readmetadata', function(req, res) {
 	});
 });
 
-
-app.get('/image/resize', function(req, res) {
+// Qaulity  quality: 0 to 1
+app.get('/image/resize/:qaulity', function(req, res) {
 	var optionsObj = {
 		srcPath: srcImage,
-		dstPath: desPath+"butterfly_lowquality.jpg",
-		quality: 0.6,
+		dstPath: desPath+"my-pic.jpg",
+		quality: req.params.quality,
 		width: ""
 	};
 	im.resize(optionsObj, function(err, stdout){
@@ -52,54 +42,43 @@ app.get('/image/resize', function(req, res) {
 });
 
 /**
-	convert operations
-	==================
-	
+	convert operations image	
 **/
 app.get('/image/convert', function(req, res) {
 	var optionsObj = [srcImage, '-resize', '250x250', desPath+'butterfly_small.jpg'];
 	im.convert(optionsObj, function(err, stdout){
 		if (err) throw err;
 		res.json({
-			"message": "Converted Image successfully"
+			"message": "Converted successfully"
 		});
 	});
 });
 
 /**
-	crop operations
-	===============
-	
+	crop operation
+	width: Speicify width for the source crop image
+	height: Speicify height for the source crop image
 **/
-app.get('/image/crop', function(req, res) {
+app.get('/image/crop/:width/:height', function(req, res) {
 	var optionsObj = {
 		srcPath: srcImage,
 		dstPath: desPath+'butterfly_cropped.jpg',
-		width: 800,
-		height: 600,
+		width: req.params.width,
+		height: req.params.height,
 		quality: 1,
 		gravity: "North"
 	};
 	im.crop(optionsObj, function(err, stdout){
 		if (err) throw err;
 		res.json({
-			"message": "cropped Image successfully"
+			"message": "cropping done",
+			"width":req.params.width,
+			"height":eq.params.height
 		});
 	});
 });
 
-(function() {
-    var childProcess = require("child_process");
-    var oldSpawn = childProcess.spawn;
-    function mySpawn() {
-        console.log('spawn called');
-        console.log(arguments);
-        var result = oldSpawn.apply(this, arguments);
-        return result;
-    }
-    childProcess.spawn = mySpawn;
-})();
 
-app.listen('8900', function(){
-	console.log("connected to port 8900");
+app.listen('3000', function(){
+	console.log("server listening on port 3000");
 })
