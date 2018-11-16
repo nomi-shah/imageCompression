@@ -3,7 +3,8 @@ var express = require('express');
 		fs = require('fs'),
 		im = require('imagemagick'),
 		srcImage = "./source_images/my-pic.jpg",
-		desPath = "./destination_images/";
+		desPath = "./destination_images/";				
+const args = process.argv;
 
 app.get('/health', function(req, res) {
 	res.status(200).json({"message":"Server is healthy"});
@@ -60,9 +61,13 @@ app.get('/image/convert', function(req, res) {
 	height: Speicify height for the source crop image
 **/
 app.get('/image/crop/:width/:height', function(req, res) {
+	crop_image(req,res);
+});
+
+function crop_image(req,res){
 	var optionsObj = {
 		srcPath: srcImage,
-		dstPath: desPath+'butterfly_cropped.jpg',
+		dstPath: desPath+'myimage_cropped.jpg',
 		width: req.params.width,
 		height: req.params.height,
 		quality: 1,
@@ -73,12 +78,46 @@ app.get('/image/crop/:width/:height', function(req, res) {
 		res.json({
 			"message": "cropping done",
 			"width":req.params.width,
-			"height":eq.params.height
+			"height":req.params.height,
 		});
 	});
-});
+
+}
 
 
-app.listen('3000', function(){
-	console.log("server listening on port 3000");
-})
+if (args.indexOf("lamda_event.json") > -1) {
+	console.log("Starting as a lamda function.....");
+
+} else {
+    app.listen('3000', function(){
+		console.log("server listening on port 3000....");
+	});	
+}
+module.exports.crop = async (event, context) => {
+
+	var optionsObj = {
+		srcPath: srcImage,
+		dstPath: desPath+'myimage_cropped.jpg',
+		width: event.width,
+		height: event.height,
+		quality: 1,
+		gravity: "North"
+	};
+	im.crop(optionsObj, function(err, stdout){
+		console.log("Starting.........")
+		if (err) throw err;
+		
+		return {
+			statusCode: 200,
+			body: JSON.stringify({
+				
+					message: "cropping done",
+					width:event.width,
+					height:event.height
+				
+			}),
+		  };
+	});
+
+  };
+  
