@@ -6,17 +6,15 @@ Start as a server to compress image
 width
 height
 
-```
-http://localhost:3000/image/crop/:width/:height
-http://localhost:3000/image/crop/400/400```
+`http://localhost:3000/image/crop/:width/:height`
+`http://localhost:3000/image/crop/400/400`
 # Resize
 
 Qaulity 0-1
 
-```
-http://localhost:3000/image/resize/:qaulity
-http://localhost:3000/image/resize/:0.5
-```
+`http://localhost:3000/image/resize/:qaulity`
+`http://localhost:3000/image/resize/:0.5`
+
 
 
 
